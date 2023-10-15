@@ -5,12 +5,11 @@ import (
 )
 
 func TestLineByLine(t *testing.T) {
-	rdr := NewReader()
+	rdr := NewReader(12)
 	filename := "test.txt"
 	rdr.ReadFile(filename)
-	students := rdr.parseStudents()
-	for _, line := range students {
-		t.Errorf("%v", line)
+	rdr.ParseStudents()
+	for _, stream := range rdr.Streams {
+		t.Errorf("%v", stream.Students)
 	}
-
 }

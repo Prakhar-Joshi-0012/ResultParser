@@ -1,10 +1,10 @@
 package reader
 
 import (
+	. "ResultParser/RSParser/Errors"
 	student "ResultParser/RSParser/Student"
+	. "ResultParser/RSParser/Subjects"
 	"bufio"
-	"errors"
-	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -13,23 +13,35 @@ import (
 )
 
 type FileReader struct {
-	data [][]string
+	data    [][]string
+	std     int
+	Streams []Streams
 }
 
 func (fr *FileReader) ReadFile(f string) {
 	linebyline(fr, f)
 }
 
-func NewReader() FileReader {
-	return FileReader{data: [][]string{}}
-}
-
-func ErrorEncountered(err error, msg ...string) error {
-	e := fmt.Sprintf("Error: %v\n", err)
-	for _, msg := range msg {
-		e += fmt.Sprintf("%v\n", msg)
+func NewReader(std int) *FileReader {
+	if std == 12 {
+		return &FileReader{
+			data: [][]string{},
+			std:  std,
+			Streams: []Streams{
+				{Name: "Arts", SubCodes: map[string]bool{}, Students: []student.Student{}},
+				{Name: "Commerce", SubCodes: map[string]bool{}, Students: []student.Student{}},
+				{Name: "Science", SubCodes: map[string]bool{}, Students: []student.Student{}},
+			},
+		}
+	} else {
+		return &FileReader{
+			data: [][]string{},
+			std:  std,
+			Streams: []Streams{
+				{Name: "Marks", SubCodes: map[string]bool{}, Students: []student.Student{}},
+			},
+		}
 	}
-	return errors.New(e)
 }
 
 func linebyline(rdr *FileReader, f string) error {
@@ -57,23 +69,27 @@ func linebyline(rdr *FileReader, f string) error {
 	return nil
 }
 
-func (fr *FileReader) parseStudents() []student.Student {
+func (fr *FileReader) ParseStudents() {
 	var index int = 0
 	var size int = len(fr.data)
-	StudentData := []student.Student{}
 
 	for index < size {
 		line := fr.data[index]
 		_, e := strconv.Atoi(line[0])
 		if e == nil {
 			name, rno, gender, subCode := parseStudent(fr.data[index])
+			_, streamIn := ReturnStream(fr.std, subCode)
 			index++
 			marks := parseMarks(fr.data[index])
-			StudentData = append(StudentData, student.NewStudent(name, rno, gender, subCode, marks))
+			for _, k := range subCode {
+				if _, e := fr.Streams[streamIn].SubCodes[k]; !e {
+					fr.Streams[streamIn].SubCodes[k] = true
+				}
+			}
+			fr.Streams[streamIn].Students = append(fr.Streams[streamIn].Students, student.NewStudent(name, rno, gender, subCode, marks))
 		}
 		index++
 	}
-	return StudentData
 }
 
 func parseStudent(s []string) (string, string, string, []string) {
