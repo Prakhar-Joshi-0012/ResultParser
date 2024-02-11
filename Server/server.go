@@ -13,7 +13,7 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	t := template.Must(template.ParseFiles("index.html"))
+	t := template.Must(template.ParseFiles("Server/templates/index.html"))
 	t.Execute(w, "Here are your file entries......")
 
 }
