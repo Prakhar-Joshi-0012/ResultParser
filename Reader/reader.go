@@ -5,6 +5,7 @@ import (
 	student "ResultParser/Student"
 	. "ResultParser/Subjects"
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -79,8 +80,18 @@ func (fr *FileReader) ParseStudents() {
 		if e == nil {
 			name, rno, gender, subCode := parseStudent(fr.data[index])
 			_, streamIn := ReturnStream(fr.std, subCode)
+			status := fr.data[index][len(fr.data[index])-1]
+			fmt.Printf("Status: %s\n", status)
+			var marks []string
 			index++
-			marks := parseMarks(fr.data[index])
+			if status == "ABST" {
+				index--
+				for i := 0; i < len(subCode); i++ {
+					marks = append(marks, "0")
+				}
+			} else {
+				marks = parseMarks(fr.data[index])
+			}
 			for _, k := range subCode {
 				if _, e := fr.Streams[streamIn].SubCodes[k]; !e {
 					fr.Streams[streamIn].SubCodes[k] = true
@@ -108,6 +119,9 @@ func parseStudent(s []string) (string, string, string, []string) {
 	}
 	subCode := []string{}
 	for pos < end {
+		if s[pos] == "PASS" || s[pos] == "ABST" || s[pos] == "COMP" {
+			break
+		}
 		_, e := strconv.Atoi(s[pos])
 		if e == nil {
 			subCode = append(subCode, s[pos])
