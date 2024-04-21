@@ -5,7 +5,6 @@ import (
 	student "ResultParser/Student"
 	. "ResultParser/Subjects"
 	"bufio"
-	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -81,7 +80,6 @@ func (fr *FileReader) ParseStudents() {
 			name, rno, gender, subCode := parseStudent(fr.data[index])
 			_, streamIn := ReturnStream(fr.std, subCode)
 			status := fr.data[index][len(fr.data[index])-1]
-			fmt.Printf("Status: %s\n", status)
 			var marks []string
 			index++
 			if status == "ABST" {

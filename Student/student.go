@@ -22,7 +22,6 @@ func NewStudent(name string, rollno string, gender string, SubCode []string, mar
 }
 
 func bind(SubCode []string, marks []string) map[string]int {
-	fmt.Printf("Marks %v\n", marks)
 	if len(SubCode) != len(marks) {
 		fmt.Printf("Parsing : SubCodes doesn't match with marks")
 		fmt.Printf("SubCode : %v\n", SubCode)
