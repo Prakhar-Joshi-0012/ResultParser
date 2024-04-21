@@ -7,4 +7,4 @@ Converts the result provided by CBSE into an human readable excel file.
 # Excel Result Generated
 ![Alt excel file data](/impls/fix.png)
 
-Currently hosted at [pkr1012.alwaysdata.net](pkr1012.alwaysdata.net)
+Currently hosted at [pkr1012.alwaysdata.net](https://pkr1012.alwaysdata.net)
